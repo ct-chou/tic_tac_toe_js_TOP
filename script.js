@@ -3,17 +3,50 @@ const gameboard = (function() {
     let row2 = ["", "", ""];
     let row3 = ["", "", ""];
     let board = [row1, row2, row3];
+    totalMoves = 0;
+
     function displayBoard() {
         console.log(board);
     }
+    
     function placeMarker(row, column, marker) {
         if (board[row][column] === "") {
             board[row][column] = marker;
+            totalMoves++;
+            checkWinner();
         }
         else {
             console.log("Invalid move");
         }
     }
+
+    function checkWinner() {
+        for (let i = 0; i < 3; i++) {
+            if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0] !== "") {
+                console.log(board[i][0] + " wins");
+                return board[i][0];
+            }
+            if (board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== "") {
+                console.log(board[0][i] + " wins");
+                return board[0][i];
+            }
+        }
+        if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== "") {
+            console.log(board[0][0] + " wins");
+            return board[0][0];
+        }
+        if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== "") {
+            console.log(board[0][2] + " wins");
+            return board[0][2];
+        }
+        if (totalMoves === 9) {
+            console.log("It's a tie");
+            return "tie";
+        }
+        console.log("Next turn");
+        return null
+    }
+
     return {displayBoard, placeMarker};
 })();
 
@@ -59,4 +92,4 @@ gameboard.placeMarker(0, 0, chris.getSymbol());
 gameboard.displayBoard();
 scoreBoardCC.changeTurn();
 scoreBoardCC.getTurn();
-gameboard.placeMarker(0, 0, chelsea.getSymbol());
+gameboard.placeMarker(1, 0, chelsea.getSymbol());
