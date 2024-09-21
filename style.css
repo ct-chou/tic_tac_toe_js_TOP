@@ -4,3 +4,19 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.container {
+    background-color: white;
+}
+
+.container > div {
+    border: 1px solid rgb(243, 57, 57);
+    display: grid;
+}
+
+.container > div > div {
+    height: 100px;
+    width: 100px;
+    margin: 10px;
+    border: 1px solid black;
+}
