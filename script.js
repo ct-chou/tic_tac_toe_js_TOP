@@ -6,8 +6,15 @@ const gameboard = (function() {
     function displayBoard() {
         console.log(board);
     }
-
-    return {displayBoard};
+    function placeMarker(row, column, marker) {
+        if (board[row][column] === "") {
+            board[row][column] = marker;
+        }
+        else {
+            console.log("Invalid move");
+        }
+    }
+    return {displayBoard, placeMarker};
 })();
 
 function newPlayer(name, symbol) {
@@ -38,7 +45,7 @@ function newScoreBoard(player1, player2) {
         }
     }
     function getTurn() {
-        return turn;
+        console.log(turn.getName() + "'s turn");
     }
     return {displayScore, resetScore, changeTurn, getTurn};
 }
@@ -46,3 +53,10 @@ function newScoreBoard(player1, player2) {
 const chris = newPlayer("Chris", "X");
 const chelsea = newPlayer("Chelsea", "O");
 const scoreBoardCC = newScoreBoard(chris, chelsea);
+scoreBoardCC.displayScore();
+scoreBoardCC.getTurn();
+gameboard.placeMarker(0, 0, chris.getSymbol());
+gameboard.displayBoard();
+scoreBoardCC.changeTurn();
+scoreBoardCC.getTurn();
+gameboard.placeMarker(0, 0, chelsea.getSymbol());
