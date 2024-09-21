@@ -9,35 +9,39 @@ const gameboard = (function() {
         console.log(board);
     }
     
-    function placeMarker(row, column, marker) {
+    function placeMarker(row, column, player) {
         if (board[row][column] === "") {
-            board[row][column] = marker;
+            board[row][column] = player.getMarker();
             totalMoves++;
-            checkWinner();
+            checkWinner(player);
         }
         else {
             console.log("Invalid move");
         }
     }
 
-    function checkWinner() {
+    function checkWinner(player) {
         for (let i = 0; i < 3; i++) {
             if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0] !== "") {
-                console.log(board[i][0] + " wins");
-                return board[i][0];
+                console.log(`${player.getName()} wins`);
+                player.giveWin();
+                return player.getName();
             }
             if (board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== "") {
-                console.log(board[0][i] + " wins");
-                return board[0][i];
+                console.log(`${player.getName()} wins`);
+                player.giveWin();
+                return player.getName();
             }
         }
         if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== "") {
-            console.log(board[0][0] + " wins");
-            return board[0][0];
+            console.log(`${player.getName()} wins`);
+            player.giveWin();
+            return player.getName();
         }
         if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== "") {
-            console.log(board[0][2] + " wins");
-            return board[0][2];
+            console.log(`${player.getName()} wins`);
+            player.giveWin();
+            return player.getName();
         }
         if (totalMoves === 9) {
             console.log("It's a tie");
@@ -50,15 +54,15 @@ const gameboard = (function() {
     return {displayBoard, placeMarker};
 })();
 
-function newPlayer(name, symbol) {
+function newPlayer(name, marker) {
     let wins = 0;
     
     const getWins = () => wins;
     const giveWin = () => wins++;
     const getName = () => name;
-    const getSymbol = () => symbol;
+    const getMarker = () => marker;
     const resetWins = () => wins = 0;
-    return {getWins, giveWin, getName, getSymbol, resetWins};
+    return {getWins, giveWin, getName, getMarker, resetWins};
 }
 
 function newScoreBoard(player1, player2) {
@@ -88,8 +92,8 @@ const chelsea = newPlayer("Chelsea", "O");
 const scoreBoardCC = newScoreBoard(chris, chelsea);
 scoreBoardCC.displayScore();
 scoreBoardCC.getTurn();
-gameboard.placeMarker(0, 0, chris.getSymbol());
+gameboard.placeMarker(0, 0, chris);
 gameboard.displayBoard();
 scoreBoardCC.changeTurn();
 scoreBoardCC.getTurn();
-gameboard.placeMarker(1, 0, chelsea.getSymbol());
+gameboard.placeMarker(1, 0, chelsea);
