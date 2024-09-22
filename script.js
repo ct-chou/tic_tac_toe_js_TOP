@@ -76,7 +76,8 @@ const scoreBoard = (function () {
     }
     
     function displayScore() {
-        console.log(`${player1.getName()}: ${player1.getWins()} | ${player2.getName()}: ${player2.getWins()}`);
+        return [player1.getWins(), player2.getWins()];
+        // console.log(`${player1.getName()}: ${player1.getWins()} | ${player2.getName()}: ${player2.getWins()}`);
     }
     function resetScore() {
         player1.resetWins();
@@ -95,43 +96,58 @@ const scoreBoard = (function () {
         }
     }
     function getTurn() {
+        return turn.getName();
         console.log(turn.getName() + "'s turn");
     }
     return {newScoreBoard, displayScore, resetScore, setTurn, changeTurn, getTurn};
 })();
-
-const chris = newPlayer("Chris", "X");
-const chelsea = newPlayer("Chelsea", "O");
-// let player1 = chris;
-// let player2 = chelsea;  
-
 
 const matchButton = document.querySelector("#new-matchup");
 const dialog = document.getElementById("match-dialog");
 const cancelDialog = document.querySelector("#cancelBtn");
 const confirmDialog = document.querySelector("#confirmBtn");
 
-
 matchButton.addEventListener("click", () => {
     dialog.showModal();
-    document.getElementById("player1-name").value = "";
-    document.getElementById("player2-name").value = "";
+    document.getElementById("player1-input").value = "";
+    document.getElementById("player2-input").value = "";
 });
 
 cancelDialog.addEventListener("click", () => {
     dialog.close();
 });
 
+
+
+const scoreBoardDOM = (function () {
+    function updateScore() {
+        const [score1, score2] = scoreBoard.displayScore();
+        document.getElementById("player1-wins").textContent = `${score1}`;
+        document.getElementById("player2-wins").textContent = `${score2}`;
+    }
+    function updateNames(player1, player2) {
+        document.getElementById("player1-name").textContent = player1;
+        document.getElementById("player2-name").textContent= player2;
+    }
+    function updateTurn() {
+        const turn = scoreBoard.getTurn();
+        document.getElementById("turn").textContent = `${turn}'s turn`;
+    }
+    return {updateScore, updateNames, updateTurn};
+})();
+
 confirmDialog.addEventListener("click", (e) => {
     e.preventDefault();
-    const newName1 = document.getElementById("player1-name").value;
-    const newName2 = document.getElementById("player2-name").value;
+    const newName1 = document.getElementById("player1-input").value;
+    const newName2 = document.getElementById("player2-input").value;
     let p1 = newPlayer(newName1, "X");
     let p2 = newPlayer(newName2, "O");
     scoreBoard.newScoreBoard(p1, p2);
     scoreBoard.displayScore();
     scoreBoard.setTurn(p1);
-    scoreBoard.getTurn();
+    scoreBoardDOM.updateNames(newName1, newName2);
+    scoreBoardDOM.updateScore();
+    scoreBoardDOM.updateTurn();
     dialog.close();
 });
 

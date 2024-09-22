@@ -79,7 +79,7 @@ button {
     justify-content: center;
 }
 
-.turn {
+#turn {
     grid-column: 1 / 3;
     font-size: 20px;
     font-weight: bold;
