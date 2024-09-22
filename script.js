@@ -195,7 +195,6 @@ const newGameBtn = document.querySelector("#new-game");
 
 newGameBtn.addEventListener("click", () => {
     gameBoard.newGame();
-    scoreBoard.changeTurn();
     scoreBoardDOM.updateTurn();
     gameBoardDOM.clearBoard();
 });
