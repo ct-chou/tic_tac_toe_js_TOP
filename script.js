@@ -50,8 +50,15 @@ const gameboard = (function() {
         console.log("Next turn");
         return null
     }
+    function newGame() {
+        row1 = ["", "", ""];
+        row2 = ["", "", ""];
+        row3 = ["", "", ""];
+        board = [row1, row2, row3];
+        totalMoves = 0;
+    }
 
-    return {displayBoard, placeMarker};
+    return {displayBoard, placeMarker, newGame};
 })();
 
 function newPlayer(name, marker) {
@@ -117,8 +124,6 @@ cancelDialog.addEventListener("click", () => {
     dialog.close();
 });
 
-
-
 const scoreBoardDOM = (function () {
     function updateScore() {
         const [score1, score2] = scoreBoard.displayScore();
@@ -136,6 +141,22 @@ const scoreBoardDOM = (function () {
     return {updateScore, updateNames, updateTurn};
 })();
 
+const gameBoardDOM = (function () {
+    function placeMarker(row, column, marker) {
+        const cell = document.getElementById(`row${row}-col${column}`);
+        cell.textContent = marker;
+    }
+    function clearBoard() {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                const cell = document.getElementById(`row${i}-col${j}`);
+                cell.textContent = "";
+            }
+        }
+    }
+    return {placeMarker, clearBoard};
+})();
+
 confirmDialog.addEventListener("click", (e) => {
     e.preventDefault();
     const newName1 = document.getElementById("player1-input").value;
@@ -150,6 +171,16 @@ confirmDialog.addEventListener("click", (e) => {
     scoreBoardDOM.updateTurn();
     dialog.close();
 });
+
+const newGameBtn = document.querySelector("#new-game");
+
+newGameBtn.addEventListener("click", () => {
+    gameboard.newGame();
+    scoreBoard.changeTurn();
+    scoreBoardDOM.updateTurn();
+});
+
+
 
 // const scoreBoardCC = newScoreBoard(chris, chelsea);
 // scoreBoardCC.displayScore();
