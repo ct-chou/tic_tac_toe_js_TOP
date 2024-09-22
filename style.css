@@ -3,20 +3,70 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    align-content: center;
 }
 
 .container {
-    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
 }
 
-.container > div {
-    border: 1px solid rgb(243, 57, 57);
+.container-board {
+    background-color: wheat;
+    align-items: center;
+    width: 300px;
+    height: 300px;
     display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
-.container > div > div {
-    height: 100px;
-    width: 100px;
-    margin: 10px;
+.container-board > div {
+    height: 100%;
+    width: 100%;
     border: 1px solid black;
+    background-color: white;
+    /* Center the contents inside each square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-board > div > span {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform:scale(5);
+}
+
+.scoreboard {
+    display: grid;
+    /* justify-content: space-around; */
+    background-color: white;
+    border: solid 1px black;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 20px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.scoreboard > div{
+    text-align: center;
+    margin: 10px;
+}
+
+.player {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.turn {
+    grid-column: 1 / 3;
+    font-size: 20px;
+    font-weight: bold;
 }
