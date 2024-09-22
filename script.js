@@ -1,4 +1,4 @@
-const gameboard = (function() {
+const gameBoard = (function() {
     let row1 = ["", "", ""];
     let row2 = ["", "", ""];
     let row3 = ["", "", ""];
@@ -143,13 +143,15 @@ const scoreBoardDOM = (function () {
 
 const gameBoardDOM = (function () {
     function placeMarker(row, column, marker) {
-        const cell = document.getElementById(`row${row}-col${column}`);
+        const div_tgt = document.getElementById(`row${row}-col${column}`);
+        const cell = div_tgt.querySelector("span");
         cell.textContent = marker;
     }
     function clearBoard() {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                const cell = document.getElementById(`row${i}-col${j}`);
+                const div_tgt = document.getElementById(`row${i}-col${j}`);
+                let cell = div_tgt.querySelector("span");
                 cell.textContent = "";
             }
         }
@@ -169,24 +171,40 @@ confirmDialog.addEventListener("click", (e) => {
     scoreBoardDOM.updateNames(newName1, newName2);
     scoreBoardDOM.updateScore();
     scoreBoardDOM.updateTurn();
+    gameBoardDOM.clearBoard();
     dialog.close();
 });
 
 const newGameBtn = document.querySelector("#new-game");
 
 newGameBtn.addEventListener("click", () => {
-    gameboard.newGame();
+    gameBoard.newGame();
     scoreBoard.changeTurn();
     scoreBoardDOM.updateTurn();
 });
 
+const boardContainer = document.querySelector(".container-board");
+const divBoard = boardContainer.querySelectorAll("div");
 
+let i = 0;
+let j = 0;
+divBoard.forEach(square => {
+    const span = document.createElement("span");
+    span.id = "row" + i + "-col" + j;
+    square.appendChild(span);
+    j++;
+    if (j === 3) {
+        i++;
+        j = 0;
+    }
+});
 
-// const scoreBoardCC = newScoreBoard(chris, chelsea);
-// scoreBoardCC.displayScore();
-// scoreBoardCC.getTurn();
-// gameboard.placeMarker(0, 0, chris);
-// gameboard.displayBoard();
-// scoreBoardCC.changeTurn();
-// scoreBoardCC.getTurn();
-// gameboard.placeMarker(1, 0, chelsea);
+const cells = boardContainer.querySelectorAll("span");
+
+cells.forEach(cell => {
+    console.log(cell.id);
+    cell.addEventListener("click", (e) => {
+        let id_full = e.target.id;
+        console.log(id_full);
+    });
+});
