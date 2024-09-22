@@ -4,12 +4,16 @@ const gameBoard = (function() {
     let row3 = ["", "", ""];
     let board = [row1, row2, row3];
     totalMoves = 0;
+    game_over = false;
 
     function displayBoard() {
         console.log(board);
     }
     
     function placeMarker(row, column, player) {
+        if (game_over) {
+            return false;
+        }
         if (board[row][column] === "") {
             board[row][column] = player.getMarker();
             totalMoves++;
@@ -25,22 +29,26 @@ const gameBoard = (function() {
             if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0] !== "") {
                 console.log(`${player.getName()} wins`);
                 scoreBoard.playerWins(player);
+                game_over = true;
                 return player.getName();
             }
             if (board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== "") {
                 console.log(`${player.getName()} wins`);
                 scoreBoard.playerWins(player);
+                game_over = true;
                 return player.getName();
             }
         }
         if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== "") {
             console.log(`${player.getName()} wins`);
             scoreBoard.playerWins(player);
+            game_over = true;
             return player.getName();
         }
         if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== "") {
             console.log(`${player.getName()} wins`);
             scoreBoard.playerWins(player);
+            game_over = true;
             return player.getName();
         }
         if (totalMoves === 9) {
@@ -141,7 +149,13 @@ const scoreBoardDOM = (function () {
         const turn = scoreBoard.getTurn();
         document.getElementById("turn").textContent = `${turn.getName()}'s turn`;
     }
-    return {updateScore, updateNames, updateTurn};
+    function updateWinner(winner) {
+        document.getElementById("turn").textContent = `${winner} wins!`;
+    }
+    function updateTie() {
+        document.getElementById("turn").textContent = "It's a tie!";
+    }
+    return {updateScore, updateNames, updateTurn, updateWinner, updateTie};
 })();
 
 const gameBoardDOM = (function () {
@@ -213,16 +227,17 @@ cells.forEach(cell => {
         if (valid === true) {
             gameBoardDOM.placeMarker(row, column, marker);
             const winner = gameBoard.checkWinner(currentPlayer);
+            console.log(winner);
             if (winner === 0) {
                 scoreBoard.changeTurn();
                 scoreBoardDOM.updateTurn();
             } else if (winner === "tie") {
                 scoreBoard.changeTurn();
-                scoreBoardDOM.updateTurn();
-            } else {
+                scoreBoardDOM.updateTie();
+            } else{
                 scoreBoardDOM.updateScore();
                 scoreBoard.changeTurn();
-                scoreBoardDOM.updateTurn();
+                scoreBoardDOM.updateWinner(winner);
             }
         }
     });
