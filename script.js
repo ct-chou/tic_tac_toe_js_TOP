@@ -64,6 +64,7 @@ const gameBoard = (function() {
         row3 = ["", "", ""];
         board = [row1, row2, row3];
         totalMoves = 0;
+        game_over = false;
     }
 
     return {displayBoard, placeMarker, checkWinner, newGame};
@@ -196,6 +197,13 @@ newGameBtn.addEventListener("click", () => {
     gameBoard.newGame();
     scoreBoard.changeTurn();
     scoreBoardDOM.updateTurn();
+    gameBoardDOM.clearBoard();
+});
+
+const resetScoreBtn = document.querySelector("#reset");
+resetScoreBtn.addEventListener("click", () => {
+    scoreBoard.resetScore();
+    scoreBoardDOM.updateScore();
 });
 
 const boardContainer = document.querySelector(".container-board");
