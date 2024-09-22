@@ -6,6 +6,20 @@ body {
     align-content: center;
 }
 
+h1 {
+    color: white;
+}
+
+button {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .container {
     display: flex;
     justify-content: space-around;

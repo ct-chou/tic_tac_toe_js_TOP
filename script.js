@@ -65,8 +65,16 @@ function newPlayer(name, marker) {
     return {getWins, giveWin, getName, getMarker, resetWins};
 }
 
-function newScoreBoard(player1, player2) {
-    let turn = player1;
+const scoreBoard = (function () {
+    let player1;
+    let player2;
+    let turn;
+    
+    function newScoreBoard(p1, p2) {
+        player1 = p1;
+        player2 = p2;
+    }
+    
     function displayScore() {
         console.log(`${player1.getName()}: ${player1.getWins()} | ${player2.getName()}: ${player2.getWins()}`);
     }
@@ -74,6 +82,11 @@ function newScoreBoard(player1, player2) {
         player1.resetWins();
         player2.resetWins();
     }
+
+    function setTurn(player) {
+        turn = player;
+    }
+
     function changeTurn() {
         if (turn === player1) {
             turn = player2;
@@ -84,16 +97,49 @@ function newScoreBoard(player1, player2) {
     function getTurn() {
         console.log(turn.getName() + "'s turn");
     }
-    return {displayScore, resetScore, changeTurn, getTurn};
-}
+    return {newScoreBoard, displayScore, resetScore, setTurn, changeTurn, getTurn};
+})();
 
 const chris = newPlayer("Chris", "X");
 const chelsea = newPlayer("Chelsea", "O");
-const scoreBoardCC = newScoreBoard(chris, chelsea);
-scoreBoardCC.displayScore();
-scoreBoardCC.getTurn();
-gameboard.placeMarker(0, 0, chris);
-gameboard.displayBoard();
-scoreBoardCC.changeTurn();
-scoreBoardCC.getTurn();
-gameboard.placeMarker(1, 0, chelsea);
+// let player1 = chris;
+// let player2 = chelsea;  
+
+
+const matchButton = document.querySelector("#new-matchup");
+const dialog = document.getElementById("match-dialog");
+const cancelDialog = document.querySelector("#cancelBtn");
+const confirmDialog = document.querySelector("#confirmBtn");
+
+
+matchButton.addEventListener("click", () => {
+    dialog.showModal();
+    document.getElementById("player1-name").value = "";
+    document.getElementById("player2-name").value = "";
+});
+
+cancelDialog.addEventListener("click", () => {
+    dialog.close();
+});
+
+confirmDialog.addEventListener("click", (e) => {
+    e.preventDefault();
+    const newName1 = document.getElementById("player1-name").value;
+    const newName2 = document.getElementById("player2-name").value;
+    let p1 = newPlayer(newName1, "X");
+    let p2 = newPlayer(newName2, "O");
+    scoreBoard.newScoreBoard(p1, p2);
+    scoreBoard.displayScore();
+    scoreBoard.setTurn(p1);
+    scoreBoard.getTurn();
+    dialog.close();
+});
+
+// const scoreBoardCC = newScoreBoard(chris, chelsea);
+// scoreBoardCC.displayScore();
+// scoreBoardCC.getTurn();
+// gameboard.placeMarker(0, 0, chris);
+// gameboard.displayBoard();
+// scoreBoardCC.changeTurn();
+// scoreBoardCC.getTurn();
+// gameboard.placeMarker(1, 0, chelsea);
