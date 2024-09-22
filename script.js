@@ -13,10 +13,10 @@ const gameBoard = (function() {
         if (board[row][column] === "") {
             board[row][column] = player.getMarker();
             totalMoves++;
-            checkWinner(player);
+            return true;
         }
         else {
-            console.log("Invalid move");
+            return false;
         }
     }
 
@@ -24,23 +24,23 @@ const gameBoard = (function() {
         for (let i = 0; i < 3; i++) {
             if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0] !== "") {
                 console.log(`${player.getName()} wins`);
-                player.giveWin();
+                scoreBoard.playerWins(player);
                 return player.getName();
             }
             if (board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== "") {
                 console.log(`${player.getName()} wins`);
-                player.giveWin();
+                scoreBoard.playerWins(player);
                 return player.getName();
             }
         }
         if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== "") {
             console.log(`${player.getName()} wins`);
-            player.giveWin();
+            scoreBoard.playerWins(player);
             return player.getName();
         }
         if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== "") {
             console.log(`${player.getName()} wins`);
-            player.giveWin();
+            scoreBoard.playerWins(player);
             return player.getName();
         }
         if (totalMoves === 9) {
@@ -48,7 +48,7 @@ const gameBoard = (function() {
             return "tie";
         }
         console.log("Next turn");
-        return null
+        return 0;
     }
     function newGame() {
         row1 = ["", "", ""];
@@ -58,7 +58,7 @@ const gameBoard = (function() {
         totalMoves = 0;
     }
 
-    return {displayBoard, placeMarker, newGame};
+    return {displayBoard, placeMarker, checkWinner, newGame};
 })();
 
 function newPlayer(name, marker) {
@@ -77,6 +77,10 @@ const scoreBoard = (function () {
     let player2;
     let turn;
     
+    function playerWins(player) {
+        player.giveWin();
+    }
+
     function newScoreBoard(p1, p2) {
         player1 = p1;
         player2 = p2;
@@ -103,10 +107,9 @@ const scoreBoard = (function () {
         }
     }
     function getTurn() {
-        return turn.getName();
-        console.log(turn.getName() + "'s turn");
+        return turn;
     }
-    return {newScoreBoard, displayScore, resetScore, setTurn, changeTurn, getTurn};
+    return {playerWins, newScoreBoard, displayScore, resetScore, setTurn, changeTurn, getTurn};
 })();
 
 const matchButton = document.querySelector("#new-matchup");
@@ -136,23 +139,21 @@ const scoreBoardDOM = (function () {
     }
     function updateTurn() {
         const turn = scoreBoard.getTurn();
-        document.getElementById("turn").textContent = `${turn}'s turn`;
+        document.getElementById("turn").textContent = `${turn.getName()}'s turn`;
     }
     return {updateScore, updateNames, updateTurn};
 })();
 
 const gameBoardDOM = (function () {
     function placeMarker(row, column, marker) {
-        const div_tgt = document.getElementById(`row${row}-col${column}`);
-        const cell = div_tgt.querySelector("span");
+        let cell = document.getElementById(`row${row}-col${column}`);
         cell.textContent = marker;
     }
     function clearBoard() {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                const div_tgt = document.getElementById(`row${i}-col${j}`);
-                let cell = div_tgt.querySelector("span");
-                cell.textContent = "";
+                let cell = document.getElementById(`row${i}-col${j}`);
+                cell.textContent = '';
             }
         }
     }
@@ -202,9 +203,27 @@ divBoard.forEach(square => {
 const cells = boardContainer.querySelectorAll("span");
 
 cells.forEach(cell => {
-    console.log(cell.id);
     cell.addEventListener("click", (e) => {
-        let id_full = e.target.id;
-        console.log(id_full);
+        const id_full = e.target.id;
+        const row = parseInt(id_full[3]);
+        const column = parseInt(id_full[8]);
+        const currentPlayer = scoreBoard.getTurn();
+        const marker = currentPlayer.getMarker();
+        valid = gameBoard.placeMarker(row, column, currentPlayer);
+        if (valid === true) {
+            gameBoardDOM.placeMarker(row, column, marker);
+            const winner = gameBoard.checkWinner(currentPlayer);
+            if (winner === 0) {
+                scoreBoard.changeTurn();
+                scoreBoardDOM.updateTurn();
+            } else if (winner === "tie") {
+                scoreBoard.changeTurn();
+                scoreBoardDOM.updateTurn();
+            } else {
+                scoreBoardDOM.updateScore();
+                scoreBoard.changeTurn();
+                scoreBoardDOM.updateTurn();
+            }
+        }
     });
 });
